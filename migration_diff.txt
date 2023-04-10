@@ -1,0 +1,81 @@
+##########/home/nikiforos/cloned_packages/cepheus_control/src/cepheus_controller.cpp##########
+================================================================================================================================================================
+- #include "ros/ros.h"
++ #include "rclcpp/rclcpp.hpp"
+================================================================================================================================================================
+- void velocityCheckCallback(const sensor_msgs::JointState::ConstPtr& msg) {
++ void velocityCheckCallback(const sensor_msgs::JointState::SharedPtr msg) {
+================================================================================================================================================================
+- void positionCheckCallback(const gazebo_msgs::LinkStates::ConstPtr& msg) {
++ void positionCheckCallback(const gazebo_msgs::LinkStates::SharedPtr msg) {
+================================================================================================================================================================
+-     ros::init(argc, argv, "cepheus_controller_node");
++     rclcpp::init(argc, argv, "cepheus_controller_node");
+================================================================================================================================================================
+-     ros::NodeHandle n;
++     std::shared_ptr<rclcpp::Node> n(rclcpp::Node::make_shared(cepheus_controller.cpp));
+================================================================================================================================================================
+-     ros::Publisher RW_velocity_pub = n.advertise<std_msgs::Float64>("/cepheus/reaction_wheel_velocity_controller/command", 1);
++     std::shared_ptr<rclcpp::Publisher> RW_velocity_pub = n.advertise<std_msgs::msg::Float64>("/cepheus/reaction_wheel_velocity_controller/command", 1);
+================================================================================================================================================================
+-     ros::Publisher LE_position_pub = n.advertise<std_msgs::Float64>("/cepheus/left_elbow_position_controller/command", 1);
++     std::shared_ptr<rclcpp::Publisher> LE_position_pub = n.advertise<std_msgs::msg::Float64>("/cepheus/left_elbow_position_controller/command", 1);
+================================================================================================================================================================
+-     ros::Publisher LS_position_pub = n.advertise<std_msgs::Float64>("/cepheus/left_shoulder_position_controller/command", 1);
++     std::shared_ptr<rclcpp::Publisher> LS_position_pub = n.advertise<std_msgs::msg::Float64>("/cepheus/left_shoulder_position_controller/command", 1);
+================================================================================================================================================================
+-     std_msgs::Float64 msg_RW;
++     std_msgs::msg::Float64 msg_RW;
+================================================================================================================================================================
+-     std_msgs::Float64 msg_LE;
++     std_msgs::msg::Float64 msg_LE;
+================================================================================================================================================================
+-     std_msgs::Float64 msg_LS;
++     std_msgs::msg::Float64 msg_LS;
+================================================================================================================================================================
+-     ros::Subscriber RW_velocity_sub = n.subscribe<sensor_msgs::JointState>("/cepheus/joint_states", 1, velocityCheckCallback);
++     std::shared_ptr<rclcpp::Subscription<unknown_template>> RW_velocity_sub = n.subscribe<sensor_msgs::JointState>("/cepheus/joint_states", 1, velocityCheckCallback);
+================================================================================================================================================================
+-     ros::Subscriber position_sub = n.subscribe<gazebo_msgs::LinkStates>("/gazebo/link_states", 1, positionCheckCallback);
++     std::shared_ptr<rclcpp::Subscription<unknown_template>> position_sub = n.subscribe<gazebo_msgs::LinkStates>("/gazebo/link_states", 1, positionCheckCallback);
+================================================================================================================================================================
+-     ros::Rate loop_rate(frequency);
++     rclcpp::Rate loop_rate(frequency);
+================================================================================================================================================================
+-     while (ros::ok()) {
++     while (rclcpp::ok()) {
+================================================================================================================================================================
+-         ros::spinOnce();
++         rclcpp::spin_some(n);
+================================================================================================================================================================
+-         msg_LE.data = 3 * sin(ros::Time::now().toSec());
++         msg_LE.data = 3 * sin(rclcpp::Time::now().toSec());
+================================================================================================================================================================
+-         msg_LS.data = -1 * sin(ros::Time::now().toSec());
++         msg_LS.data = -1 * sin(rclcpp::Time::now().toSec());
+================================================================================================================================================================
+-             ROS_INFO("-----------------------------------------------------------------");
++             RCLCPP_INFO(n->get_logger(),"-----------------------------------------------------------------");
+================================================================================================================================================================
+-             ROS_INFO("current measurement number: %d", currentMeasurement+1);
++             RCLCPP_INFO(n->get_logger(),"current measurement number: %d",currentMeasurement+1);
+================================================================================================================================================================
+-             ROS_INFO("q1: %.3f, q2: %.3f, q1dot: %.3f, q2dot: %.3f, omega0: %.3f", q1, q2, q1dot, q2dot, omega0);
++             RCLCPP_INFO(n->get_logger(),"q1: %.3f, q2: %.3f, q1dot: %.3f, q2dot: %.3f, omega0: %.3f",q1,q2,q1dot,q2dot,omega0);
+================================================================================================================================================================
+-             RW_velocity_sub.shutdown();
++             RW_velocity_sub->shutdown();
+================================================================================================================================================================
+-             position_sub.shutdown();
++             position_sub->shutdown();
+================================================================================================================================================================
+-             ROS_INFO("rank = %ld", rank);
++             RCLCPP_INFO(n->get_logger(),"rank = %ld",rank);
+================================================================================================================================================================
+
+
+
+##########/home/nikiforos/cloned_packages/cepheus_control/src/define.h##########
+================================================================================================================================================================
+
+
