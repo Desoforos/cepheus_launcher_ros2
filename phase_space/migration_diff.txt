@@ -1,0 +1,207 @@
+##########/home/nikiforos/cloned_cepheus_ws/phase_space/src/track_body_node.cpp##########
+================================================================================================================================================================
+- #include <ros/ros.h>
++ #include <rclcpp/rclcpp.hpp>
+================================================================================================================================================================
+- #include <std_msgs/String.h>
++ #include <std_msgs/msg/string.hpp>
+================================================================================================================================================================
+- 			ros::NodeHandle nh_;
++ 			std::shared_ptr<rclcpp::Node> nh_;
+================================================================================================================================================================
+- 			ros::NodeHandle priv_nh_;
++ 			std::shared_ptr<rclcpp::Node> priv_nh_;
+================================================================================================================================================================
+- 			ros::Subscriber sub_phase_space_markers_;
++ 			std::shared_ptr<rclcpp::Subscription<unknown_template>> sub_phase_space_markers_;
+================================================================================================================================================================
+- 			ros::Publisher pub_transform_;
++ 			std::shared_ptr<rclcpp::Publisher> pub_transform_;
+================================================================================================================================================================
+- 			PoseTracker(ros::NodeHandle nh, int argc,char** argv) : nh_(nh), priv_nh_("~"), filter_()
++ 			PoseTracker(std::shared_ptr<rclcpp::Node> nh, int argc,char** argv) : nh_(nh), priv_nh_("~"), filter_()
+================================================================================================================================================================
+- 			//sub_phase_space_markers_ = nh_.subscribe(nh_.resolveName("/phase_space_markers"), 10, &PoseTracker::estimatePose,this,ros::TransportHints().tcpNoDelay(true)); 
++ 			//sub_phase_space_markers_ = nh_.subscribe(nh_.resolveName("/phase_space_markers"), 10, &PoseTracker::estimatePose,this,rclcpp::TransportHints().tcpNoDelay(true)); 
+================================================================================================================================================================
+- 		ROS_INFO("Succesfully parsed all LED parameters!");
++ 		RCLCPP_INFO(priv_nh_->get_logger(),"Succesfully parsed all LED parameters!");
+================================================================================================================================================================
+- 		tf_broadcaster_.sendTransform(tf::StampedTransform(pose, ros::Time::now(), reference_frame_.c_str(), object_frame_.c_str()));
++ 		tf_broadcaster_.sendTransform(tf::StampedTransform(pose, rclcpp::Time::now(), reference_frame_.c_str(), object_frame_.c_str()));
+================================================================================================================================================================
+- 		//msg_t.header.stamp = ros::Time::now();
++ 		//msg_t.header.stamp = rclcpp::Time::now();
+================================================================================================================================================================
+- 	ros::init(argc, argv, "PoseTracker");
++ 	rclcpp::init(argc, argv, "PoseTracker");
+================================================================================================================================================================
+- 	ros::NodeHandle nh;
++ 	std::shared_ptr<rclcpp::Node> nh(rclcpp::Node::make_shared(phase_space_node.cpp));
+================================================================================================================================================================
+- 	ros::spin();
++ 	rclcpp::spin(priv_nh_);
+================================================================================================================================================================
+- 	//ros::AsyncSpinner spinner(1); // Use 1 thread
++ 	//rclcpp::AsyncSpinner spinner(1); // Use 1 thread
+================================================================================================================================================================
+- 	//ros::MultiThreadedSpinner spinner(2); // Use 2 threads
++ 	//rclcpp::MultiThreadedSpinner spinner(2); // Use 2 threads
+================================================================================================================================================================
+
+
+
+##########/home/nikiforos/cloned_cepheus_ws/phase_space/include/PoseTrackingFilter.h##########
+================================================================================================================================================================
+- #include <ros/ros.h>
++ #include <rclcpp/rclcpp.hpp>
+================================================================================================================================================================
+- #include <std_msgs/String.h>
++ #include <std_msgs/msg/string.hpp>
+================================================================================================================================================================
+
+
+
+##########/home/nikiforos/cloned_cepheus_ws/phase_space/src/phase_space_rviz_publisher.cpp##########
+================================================================================================================================================================
+- #include <ros/ros.h>
++ #include <rclcpp/rclcpp.hpp>
+================================================================================================================================================================
+-     ros::NodeHandle nh_;
++     std::shared_ptr<rclcpp::Node> nh_;
+================================================================================================================================================================
+-     ros::NodeHandle priv_nh_;
++     std::shared_ptr<rclcpp::Node> priv_nh_;
+================================================================================================================================================================
+-     ros::Publisher pub_rviz_markers_;
++     std::shared_ptr<rclcpp::Publisher> pub_rviz_markers_;
+================================================================================================================================================================
+-     ros::Subscriber sub_phase_space_markers_;
++     std::shared_ptr<rclcpp::Subscription<unknown_template>> sub_phase_space_markers_;
+================================================================================================================================================================
+-     PhaseSpaceViz(ros::NodeHandle nh) : nh_(nh), priv_nh_("~")
++     PhaseSpaceViz(std::shared_ptr<rclcpp::Node> nh) : nh_(rclcpp::Node::make_shared(PoseTrackingFilter.cpp)), priv_nh_("~")
+================================================================================================================================================================
+-         rviz_marker_.lifetime = ros::Duration();
++         rviz_marker_.lifetime = rclcpp::Duration();
+================================================================================================================================================================
+-     ros::init(argc, argv, "phase_space_viz_publisher");
++     rclcpp::init(argc, argv, "phase_space_viz_publisher");
+================================================================================================================================================================
+-     ros::NodeHandle nh;
++     std::shared_ptr<rclcpp::Node> nh(rclcpp::Node::make_shared(PoseTrackingFilter.cpp));
+================================================================================================================================================================
+-     ros::spin();
++     rclcpp::spin(static_cast<std::shared_ptr<rclcpp::Node>&>(node));
+================================================================================================================================================================
+
+
+
+##########/home/nikiforos/cloned_cepheus_ws/phase_space/build/phase_space/devel/include/phase_space/PhaseSpaceMarkerArray.h##########
+================================================================================================================================================================
+-    typedef  ::std_msgs::Header_<ContainerAllocator>  _header_type;
++    typedef  ::std_msgs::msg::Header_<ContainerAllocator>  _header_type;
+================================================================================================================================================================
+-   typedef boost::shared_ptr< ::phase_space::PhaseSpaceMarkerArray_<ContainerAllocator> > Ptr;
++   typedef std::shared_ptr< ::phase_space::PhaseSpaceMarkerArray_<ContainerAllocator> > Ptr;
+================================================================================================================================================================
+-   typedef boost::shared_ptr< ::phase_space::PhaseSpaceMarkerArray_<ContainerAllocator> const> ConstPtr;
++   typedef std::shared_ptr< ::phase_space::PhaseSpaceMarkerArray_<ContainerAllocator> const> ConstPtr;
+================================================================================================================================================================
+- typedef boost::shared_ptr< ::phase_space::PhaseSpaceMarkerArray > PhaseSpaceMarkerArrayPtr;
++ typedef std::shared_ptr< ::phase_space::PhaseSpaceMarkerArray > PhaseSpaceMarkerArrayPtr;
+================================================================================================================================================================
+- typedef boost::shared_ptr< ::phase_space::PhaseSpaceMarkerArray const> PhaseSpaceMarkerArrayConstPtr;
++ typedef std::shared_ptr< ::phase_space::PhaseSpaceMarkerArray const> PhaseSpaceMarkerArrayConstPtr;
+================================================================================================================================================================
+- ros::message_operations::Printer< ::phase_space::PhaseSpaceMarkerArray_<ContainerAllocator> >::stream(s, "", v);
++ rclcpp::message_operations::Printer< ::phase_space::PhaseSpaceMarkerArray_<ContainerAllocator> >::stream(s, "", v);
+================================================================================================================================================================
+-     Printer< ::std_msgs::Header_<ContainerAllocator> >::stream(s, indent + "  ", v.header);
++     Printer< ::std_msgs::msg::Header_<ContainerAllocator> >::stream(s, indent + "  ", v.header);
+================================================================================================================================================================
+
+
+
+##########/home/nikiforos/cloned_cepheus_ws/phase_space/src/phase_space_node.cpp##########
+================================================================================================================================================================
+- #include <ros/ros.h>
++ #include <rclcpp/rclcpp.hpp>
+================================================================================================================================================================
+- 			ros::NodeHandle nh_;
++ 			std::shared_ptr<rclcpp::Node> nh_;
+================================================================================================================================================================
+- 			ros::NodeHandle priv_nh_;
++ 			std::shared_ptr<rclcpp::Node> priv_nh_;
+================================================================================================================================================================
+- 			ros::Publisher pub_phase_space_markers_;
++ 			std::shared_ptr<rclcpp::Publisher> pub_phase_space_markers_;
+================================================================================================================================================================
+- 			void grabTime(std_msgs::Time&);
++ 			void grabTime(std_msgs::msg::Time&);
+================================================================================================================================================================
+- 			PhaseSpaceClient(ros::NodeHandle nh) : nh_(nh), priv_nh_("~")
++ 			PhaseSpaceClient(std::shared_ptr<rclcpp::Node> nh) : nh_(rclcpp::Node::make_shared(phase_space_rviz_publisher.cpp)), priv_nh_("~")
+================================================================================================================================================================
+- 			//ros::Rate loop_rate(10);
++ 			//rclcpp::Rate loop_rate(10);
+================================================================================================================================================================
+- 	void PhaseSpaceClient::grabTime(std_msgs::Time& time)
++ 	void PhaseSpaceClient::grabTime(std_msgs::msg::Time& time)
+================================================================================================================================================================
+- 		time.data = ros::Time((unsigned int) timeVal[1], (unsigned int) timeVal[2]) ;
++ 		time.data = rclcpp::Time((unsigned int) timeVal[1], (unsigned int) timeVal[2]) ;
+================================================================================================================================================================
+- 		std_msgs::Time time;
++ 		std_msgs::msg::Time time;
+================================================================================================================================================================
+- 		{    ROS_INFO("error %d", err);
++ 		{    RCLCPP_INFO(priv_nh_->get_logger(),"error %d",err);
+================================================================================================================================================================
+- 			phase_space_markers_.header.stamp = ros::Time::now();
++ 			phase_space_markers_.header.stamp = rclcpp::Time::now();
+================================================================================================================================================================
+- 	ros::init(argc, argv, "phase_space_node");
++ 	rclcpp::init(argc, argv, "phase_space_node");
+================================================================================================================================================================
+- 	ros::NodeHandle nh;
++ 	std::shared_ptr<rclcpp::Node> nh(rclcpp::Node::make_shared(phase_space_rviz_publisher.cpp));
+================================================================================================================================================================
+- 	while(ros::ok())
++ 	while(rclcpp::ok())
+================================================================================================================================================================
+- 		ros::spinOnce();
++ 		rclcpp::spin_some(priv_nh_);
+================================================================================================================================================================
+
+
+
+##########/home/nikiforos/cloned_cepheus_ws/phase_space/include/owl.h##########
+================================================================================================================================================================
+
+
+
+##########/home/nikiforos/cloned_cepheus_ws/phase_space/build/phase_space/devel/include/phase_space/PhaseSpaceMarker.h##########
+================================================================================================================================================================
+-   typedef boost::shared_ptr< ::phase_space::PhaseSpaceMarker_<ContainerAllocator> > Ptr;
++   typedef std::shared_ptr< ::phase_space::PhaseSpaceMarker_<ContainerAllocator> > Ptr;
+================================================================================================================================================================
+-   typedef boost::shared_ptr< ::phase_space::PhaseSpaceMarker_<ContainerAllocator> const> ConstPtr;
++   typedef std::shared_ptr< ::phase_space::PhaseSpaceMarker_<ContainerAllocator> const> ConstPtr;
+================================================================================================================================================================
+- typedef boost::shared_ptr< ::phase_space::PhaseSpaceMarker > PhaseSpaceMarkerPtr;
++ typedef std::shared_ptr< ::phase_space::PhaseSpaceMarker > PhaseSpaceMarkerPtr;
+================================================================================================================================================================
+- typedef boost::shared_ptr< ::phase_space::PhaseSpaceMarker const> PhaseSpaceMarkerConstPtr;
++ typedef std::shared_ptr< ::phase_space::PhaseSpaceMarker const> PhaseSpaceMarkerConstPtr;
+================================================================================================================================================================
+- ros::message_operations::Printer< ::phase_space::PhaseSpaceMarker_<ContainerAllocator> >::stream(s, "", v);
++ rclcpp::message_operations::Printer< ::phase_space::PhaseSpaceMarker_<ContainerAllocator> >::stream(s, "", v);
+================================================================================================================================================================
+
+
+
+##########/home/nikiforos/cloned_cepheus_ws/phase_space/src/PoseTrackingFilter.cpp##########
+================================================================================================================================================================
+
+
